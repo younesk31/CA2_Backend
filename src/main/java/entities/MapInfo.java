@@ -1,5 +1,7 @@
 package entities;
 
+import dtos.MapDTO;
+
 import javax.persistence.*;
 
 @Table(name = "map_info")
@@ -23,18 +25,34 @@ public class MapInfo {
     @Column(name = "current_map_image")
     private String currentMapImage;
 
+    public MapInfo() {
+    }
+
+    public MapInfo(MapDTO mapDTO) {
+        this.currentMap = mapDTO.getCurrentMap();
+        this.nextMap = mapDTO.getNextMap();
+        this.durationMins = mapDTO.getDurationMins();
+        this.currentMapImage = getCurrentMapImage();
+    }
+
     public String getCurrentMapImage() {
         String lastParam = currentMapImage.substring(currentMapImage.lastIndexOf('/') + 1);
         String[] maparray = lastParam.split("_",5);
-        if (maparray[0].equals("Worlds")){
-            currentMap = currentMap.replace("'","");
+        switch (maparray[0]) {
+            case "Worlds":
+                setCurrentMapImage("https:\\/\\/apexlegendsstatus.com\\/assets\\/maps\\/Worlds_Edge.png");
+                break;
+            case "Storm":
+                setCurrentMapImage("https:\\/\\/apexlegendsstatus.com\\/assets\\/maps\\/Strom_Point.png");
+                break;
+            case "Olympus":
+                setCurrentMapImage("https://apexlegendsstatus.com//assets//maps//Olympus.png");
+                break;
+            default:
+                setCurrentMapImage("undefined");
+                break;
         }
-        String[] maparray2 = maparray[1].split("\\.",5);
-        String img_arr = maparray[0] + " " + maparray2[0];
-        if (currentMap.equals(img_arr)){
-            setCurrentMapImage(currentMap);
-        }
-            return currentMap;
+        return currentMapImage;
     }
 
     public void setCurrentMapImage(String currentMapImage) {
